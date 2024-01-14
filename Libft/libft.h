@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 17:31:02 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/11 13:58:45 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/14 14:26:59 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 # include <stdint.h>
 # include <limits.h>
 # include <stdbool.h>
+# include <string.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <sys/wait.h>
 # include "get_next_line.h"
 
 typedef struct Node

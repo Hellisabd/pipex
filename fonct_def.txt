@@ -1,0 +1,62 @@
+perror == permet d afficher un message d erreur en fonction de l erreur ;  void perror(const char *s); 
+strerror == renvoie une chaîne décrivant le code d'erreur passé en argument ; char *strerror(int errnum);
+access ==  vérifie si le processus appelant peut accéder au fichier; int access(const char *pathname, int mode);
+dup ==  créent une copie du descripteur de fichier "oldfd", utilise le plus petit numéro inutilisé pour le nouveau descripteur; int dup(int oldfd);
+dup2 ==  créent une copie du descripteur de fichier "oldfd", transforme newfd en une copie de oldfd, fermant auparavant newfd si besoin ; int dup2(int oldfd, int newfd);
+execve == exécute le programme correspondant au fichier. Celui-ci doit être un exécutable binaire ou bien un script ;  int execve(const char *fichier, char *const argv[], char *const envp[]);
+unlink  ==   détruit un nom dans le système de fichiers. Si ce nom était le dernier lien sur un fichier, et si aucun processus n'a ouvert ce fichier, ce dernier est effacé, et l'espace qu'il utilisait est rendu disponible; int unlink(const char *pathname);
+wait == L'appel système wait() suspend l'exécution du processus appelant jusqu'à ce que l'un de ses fils se termine ;  pid_t wait(int *status); 
+
+fork ==  pid_t fork(void);  
+crée un nouveau processus en dupliquant le processus appelant. Le nouveau processus, que l'on appelle processus fils, est la copie exacte du processus appelant, que l'on appelle processus père ou parent;
+
+pipe ==  int pipe(int pipefd[2]);
+pipe() crée un tube, un canal unidirectionnel de données qui peut être utilisé pour la communication entre processus.
+Le tableau pipefd est utilisé pour renvoyé deux descripteurs de fichier faisant référence aux extrémités du tube.
+pipefd[0] fait référence à l'extrémité de lecture du tube.
+pipefd[1] fait référence à l'extrémité d'écriture du tube.
+Les données écrites sur l'extrémité d'écriture du tube sont mises en mémoire tampon par le noyau jusqu'à ce qu'elles soient lues sur l'extrémité de lecture du tube
+
+waitpid == pid_t waitpid(pid_t pid, int *status, int options); 
+ L'appel système waitpid() suspend l'exécution du processus appelant jusqu'à ce que le fils spécifié par son pid ait changé d'état. Par défaut, waitpid() n'attend que les fils terminés, mais ce comportement est modifiable avec l'argument options comme décrit plus loin.
+
+La valeur de pid peut être l'une des suivantes :
+
+< -1
+    attendre la fin de n'importe lequel des processus fils dont le GID du processus est égal à la valeur absolue de pid. 
+-1
+    attendre n'importe lequel des processus fils. 
+0
+    attendre n'importe lequel des processus fils dont le GID du processus est égal à celui du processus appelant. 
+> 0
+    attendre n'importe lequel des processus fils dont le PID est égal à pid. 
+
+La valeur de options est un OU binaire entre zéro ou plus des constantes suivantes :
+
+WNOHANG
+    revenir immédiatement si aucun fils n'est achevé. 
+WUNTRACED
+    revenir si un fils est bloqué (mais non suivi par ptrace(2)). L'état des fils suivis est fourni même sans cette option. traced 
+WCONTINUED (Depuis Linux 2.6.10)
+    revenir si un fils bloqué a été relancé par la délivrance du signal SIGCONT. 
+
+(Pour les options spécifiques à Linux, voir plus bas.)
+
+Si status n'est pas NULL, wait() et waitpid() enregistre les informations sur l'état dans l'entier int sur lequel il pointe. Cet entier est analysé avec les macros suivantes (qui prennent en argument l'entier lui-même, pas un pointeur sur lui, comme cela est fait dans wait() et waitpid()!) :
+
+WIFEXITED(status)
+    renvoie vrai si le fils s'est terminé normalement, c'est-à-dire par un appel à exit(3) ou _exit(2), ou bien par un retour de main(). 
+WEXITSTATUS(status)
+    renvoie le code de sortie du fils. Ce code est constitué par les 8 bits de poids faibles de l'argument status que le fils a fourni à exit(3) ou à _exit(2) ou l'argument d'une commande de retour dans main(). Cette macro ne peut être évaluée que si WIFEXITED a renvoyé vrai. 
+WIFSIGNALED(status)
+    renvoie vrai si le fils s'est terminé à cause d'un signal. 
+WTERMSIG(status)
+    renvoie le numéro du signal qui a causé la fin du fils. Cette macro ne peut être évaluée que si WIFSIGNALED a renvoyé vrai. 
+WCOREDUMP(status)
+    renvoie vrai si le fils a créé un fichier core. Cette macro ne peut être évaluée que si WIFSIGNALED a renvoyé vrai. Cette macro n'est pas décrite par POSIX.1-2001 et n'est pas disponible sur certaines implémentations (par exemple AIX, SunOS). N'utilisez ceci qu'encadré par #ifdef WCOREDUMP ... #endif. 
+WIFSTOPPED(status)
+    renvoie vrai si le fils a été arrêté par la délivrance d'un signal. Cette macro n'a de sens que si l'on a effectué l'appel avec l'option WUNTRACED ou lorsque l'appel est en cours de suivi (voir ptrace(2)). 
+WSTOPSIG(status)
+    renvoie le numéro du signal qui a causé l'arrêt du fils. Cette macro ne peut être évaluée que si WIFSTOPPED renvoie vrai. 
+WIFCONTINUED(status)
+    (depuis Linux 2.6.10) renvoie vrai si le processus fils a été relancé par la délivrance du signal SIGCONT. 
