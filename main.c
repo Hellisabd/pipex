@@ -6,51 +6,71 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 14:04:02 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/17 15:51:23 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/17 17:32:56 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include "stdio.h"
 
-char	*find_path(char **env)
+char	**find_path(char **env)
 {
-	int i;
+	char	**tmp;
+	int		i;
 	
-	i = 0;
-	while (0 != ft_strncmp(env[i], "PATH=", 5))
-		i++;
-	return (env[i][5])
+	i = -1;
+	while (0 != ft_strncmp(*env, "PATH=", 5))
+		env++;
+	tmp = ft_split(*env + 5, ':');
+	while (tmp[++i])
+		tmp[i] = ft_strjoin(tmp[i], "/");
+	return (tmp);
+	
 }
 
-char	*find_cmd(char **argv, t_pipex p)
+char	*find_cmd(char **argv, t_pipex *p)
 {
-	static int	idx_env;
-	int	i;
-	int idx_param;
-
-	i = -1;
-	while (argv[++i])
+	char *tmp;
+	int i;
+	int j;
+	int	idx_param;
+	
+	i = 1;
+	j = 0;
+	while (p->path[j])
 	{
-		if (access(argv[i], F_OK) == 0)
-			if(access(argv[i], X_OK) == 0)
+		tmp = ft_strjoin(p->path[j], argv[i]);
+		printf("%s\n", tmp);
+		while (argv[++i])
+		{
+		if (access(tmp, F_OK) == 0)
+			if (access(tmp, X_OK) == 0)
 				break ;
+		}
+		j++;
+		free (tmp);
 	}
-	i = idx_env;
-	while (argv[++i][0] == '-')
+	if (!p->path[j])
+		exit((perror("Error"), 1));
+	idx_param = i;
+	while (argv[++idx_param][0] == '-')
 	{
-		p->cmd_args[idx_param] = ft_memcpy();
+		p->cmd_args[idx_param] = ft_strdup(argv[i]);
+		printf("%s\n", p->cmd_args[idx_param]);
 	}
+	return (tmp);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_pipex	pipex;
-	char	*tmp;
-
-	tmp = find_path(env);
-	pipex.path = ft_split(tmp, ':');
-	pipex.cmd = find_cmd(argv, pipex);
+	
+	(void)argc;
+	(void)argv;
+	pipex.path = find_path(env);
+	pipex.cmd = find_cmd(argv, &pipex);
+	
+	// pipex.cmd = find_cmd(argv, pipex);
 	
 	// gestion d erreur de proc enfant 
 
