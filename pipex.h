@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 13:29:07 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/17 15:35:06 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/18 11:01:26 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 typedef struct pipex
 {
 	char    **path;
-	char    *cmd;
-	char    **cmd_args;
+	char    **cmd;
 }	t_pipex;
 
 #endif

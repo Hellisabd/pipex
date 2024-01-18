@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 14:04:02 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/17 17:32:56 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/18 14:27:33 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,64 +28,72 @@ char	**find_path(char **env)
 	
 }
 
-char	*find_cmd(char **argv, t_pipex *p)
+void exec_cmd(t_pipex *p, char **env, int argc)
 {
 	char *tmp;
-	int i;
+	// int i;
 	int j;
-	int	idx_param;
 	
-	i = 1;
+	// i = 1;
 	j = 0;
-	while (p->path[j])
+	if (argc >= 2)
 	{
-		tmp = ft_strjoin(p->path[j], argv[i]);
-		printf("%s\n", tmp);
-		while (argv[++i])
+		while (p->path[j])
 		{
-		if (access(tmp, F_OK) == 0)
-			if (access(tmp, X_OK) == 0)
-				break ;
+			tmp = ft_strjoin(p->path[j], p->cmd[0]);
+			if (access(tmp, F_OK) == 0)
+				if (access(tmp, X_OK) == 0)
+					execve(tmp, p->cmd, env);
+			free (tmp);
+			j++;
 		}
-		j++;
-		free (tmp);
 	}
-	if (!p->path[j])
-		exit((perror("Error"), 1));
-	idx_param = i;
-	while (argv[++idx_param][0] == '-')
-	{
-		p->cmd_args[idx_param] = ft_strdup(argv[i]);
-		printf("%s\n", p->cmd_args[idx_param]);
-	}
-	return (tmp);
+	free (p->path);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_pipex	pipex;
+	int		fd[2];
+	int		fd1;
+	int		fd2;
+	int		pid1;
+	int		pid2;
 	
-	(void)argc;
-	(void)argv;
-	pipex.path = find_path(env);
-	pipex.cmd = find_cmd(argv, &pipex);
-	
-	// pipex.cmd = find_cmd(argv, pipex);
-	
-	// gestion d erreur de proc enfant 
-
-	// int wstatus;
-	// int scode;
-	
-	// wait(&wstatus);
-	// if (WIFEXITED(wstatus))
-	// 		if (0 == WEXITSTATUS(wstatus));
-	// 			exit (1);
-	// while (env[i])
-	// {
-	// 	printf("%s\n", env[i]);
-	// 	i++;
-	// }
+	fd1 = open(argv[1], O_RDONLY);
+	fd2 = open(argv[4], O_WRONLY | O_CREAT, 777);
+	if (pipe(fd) == -1)
+		return (1);
+	pid1 = fork();
+	if (pid1 == 0)
+	{
+		dup2(fd1, STDIN_FILENO);
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		pipex.cmd = ft_split(argv[2], ' ');
+		pipex.path = find_path(env);
+		exec_cmd(&pipex, env, argc);
+		ft_free_double_tab(pipex.cmd);
+	}
+	pid2 = fork();
+	if (pid2 == 0)
+	{
+		dup2(fd2, STDOUT_FILENO);
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		pipex.cmd = ft_split(argv[3], ' ');
+		pipex.path = find_path(env);
+		exec_cmd(&pipex, env, argc);
+		ft_free_double_tab(pipex.cmd);
+	}
+	close(fd[0]);
+	close(fd[1]);
+	close(fd1);
+	close(fd2);
+	waitpid(pid2, NULL, 0);
+	waitpid(pid1, NULL, 0);
 }
 
 	// char	**path;
