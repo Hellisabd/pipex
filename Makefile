@@ -20,7 +20,7 @@ OBJS	= $(SRCS_MAIN:.c=.o)
 
 CC	= @gcc
 
-CFLAGS	+= -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS	+= -Wall -Wextra -Werror -g3 #-fsanitize=address
 
 RM	= @rm -rf
 
