@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 11:54:34 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/12 18:41:55 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:20:24 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ char	*ft_strtrim(char *s1, char *set)
 	if (!dst)
 		return (NULL);
 	ft_strlcpy(dst, s1 + start, end - start + 1);
+	free (s1);
 	return (dst);
 }

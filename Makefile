@@ -10,11 +10,11 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-SRCS	= 
+SRCS	= utils.c
 
 SRCS_MAIN	= main.c $(SRCS)
 
-SRCS_BONUS	= checker.c $(SRCS)
+SRCS_BONUS	= 
 
 OBJS	= $(SRCS_MAIN:.c=.o)
 
@@ -34,12 +34,12 @@ $(NAME) : $(OBJS)
 	@echo "$(MAGENTA)Make Done$(DEF_COLOR)"
 
 clean : 
-	$(RM) $(OBJS) $(OBJS_BONUS)
+	$(RM) $(OBJS)
 	@make --no-print-directory -C Libft clean
 	@echo "$(BLUE)OBJS CLEAR MY FRIEND!$(DEF_COLOR)"
 
 fclean : 
-	$(RM) $(NAME) $(OBJS) $(NAME_BONUS) $(OBJS_BONUS)
+	$(RM) $(NAME) $(OBJS)
 	@make --no-print-directory -C Libft fclean
 	@echo "$(MAGENTA)¯|_(ツ)_/¯ I'M SO PROUD OF U!$(DEF_COLOR)"
 

@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 13:29:07 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/18 11:01:26 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:19:05 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,17 @@
 
 typedef struct pipex
 {
-	char    **path;
-	char    **cmd;
+	char	**path;
+	char	**cmd;
+	int		fd[2];
+	int		fd1;
+	int		fd2;
+	int		pid1;
+	int		pid2;
 }	t_pipex;
+
+void	exit_end(int status);
+void	awk_gest(char **argv, t_pipex *p);
+void	close_fd(t_pipex *p);
 
 #endif

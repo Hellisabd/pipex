@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/bgrosjea/Desktop/workspace/pipex",
+            "binaryPath": "/home/bgrosjea/Desktop/workspace/pipex/pipex",
+            "binaryArgs": []
+        }
+    ]
+}
