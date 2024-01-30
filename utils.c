@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 10:44:44 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/30 18:38:44 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/30 18:54:28 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	exit_end(int status)
 
 void	awk_gest(char **argv, t_pipex *p)
 {
-	if (ft_strncmp(argv[p->n], "awk '", 5) == 0)
+	if (ft_strncmp(argv[3], "awk '", 5) == 0)
 		p->cmd = ft_split(argv[3], '\'');
 	else if (ft_strncmp(argv[3], "awk \"", 5) == 0)
 		p->cmd = ft_split(argv[3], '"');

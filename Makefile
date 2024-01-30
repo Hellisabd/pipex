@@ -1,5 +1,7 @@
 NAME	= pipex
 
+NAME_BONUS = pipex_bonus.x
+
 DEF_COLOR = \033[0;39m
 GRAY = \033[0;90m
 RED = \033[0;91m
@@ -14,9 +16,13 @@ SRCS	= utils.c
 
 SRCS_MAIN	= main.c $(SRCS)
 
-SRCS_BONUS	= 
+SRCS_BONUS	= utils_bonus.c
+
+MAIN_BONUS	= pipex_bonus.c $(SRCS_BONUS)
 
 OBJS	= $(SRCS_MAIN:.c=.o)
+
+OBJS_BONUS	= $(MAIN_BONUS:.c=.o)
 
 CC	= @gcc
 
@@ -32,6 +38,11 @@ $(NAME) : $(OBJS)
 	@make --no-print-directory -C Libft
 	$(CC) $(CFLAGS) $(OBJS) Libft/libft.a -o $(NAME)
 	@echo "$(MAGENTA)Make Done$(DEF_COLOR)"
+
+$(NAME_BONUS) : $(OBJS_BONUS)
+	@make --no-print-directory -C Libft
+	$(CC) $(CFLAGS) $(OBJS_BONUS) Libft/libft.a -o $(NAME_BONUS)
+	@echo "$(YELLOW)Make Bonus Done$(DEF_COLOR)"
 
 clean : 
 	$(RM) $(OBJS)
