@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 10:44:44 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/30 15:34:36 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/30 15:50:20 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void	here_doc(t_pipex *p, char **argv)
 		while (1)
 		{
 			tmp = get_next_line(0);
-			if (0 == ft_strncmp(argv[2], tmp, ft_strlen(argv[2])
-				&& tmp[ft_strlen(argv[2])]))
-				exit ((free(tmp), 0));
+			if (0 == ft_strncmp(argv[2], tmp, ft_strlen(argv[2])))
+				if (tmp[ft_strlen(argv[2])] == '\n')
+					exit ((free(tmp), 0));
 			ft_putstr_fd(tmp, p->fd[1]);
 			free(tmp);
 		}
