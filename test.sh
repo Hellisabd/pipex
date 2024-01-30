@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo salut
+cat 1>&2

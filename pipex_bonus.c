@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:44:48 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/24 18:16:08 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/30 11:09:10 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,30 +51,20 @@ void	exec_cmd(t_pipex *p, char **env)
 		exit ((free (p->path), ft_putstr_fd("command not found\n", 2), 1));
 }
 
-void	cmd(t_pipex *p, char **argv, char **env, int format)
+void	cmd(t_pipex *p, char **argv, char **env)
 {
 	int	i;
 
 	i = 0;
-	if (format == 1)
-	{
-		dup2(p->fdin, STDIN_FILENO);
-		dup2(p->fd[1], STDOUT_FILENO);
-	}
-	else
-	{
-		dup2(p->fdout, STDOUT_FILENO);
-		dup2(p->fd[0], STDIN_FILENO);
-		close(p->fdout);
-		fprintf(stderr, "lol\n");
-	}
-	close(p->fd[0]);
-	close(p->fd[1]);
-	awk_gest(argv, p);
+	p->cmd = ft_split(argv[p->n], ' ');
 	while (p->cmd[i])
 	{
 		p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
+		if (!p->cmd[i])
+			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
 		p->cmd[i] = ft_strtrim(p->cmd[i], " ");
+		if (!p->cmd[i])
+			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
 		i++;
 	}
 	p->path = find_path(env);
@@ -82,34 +72,45 @@ void	cmd(t_pipex *p, char **argv, char **env, int format)
 	ft_free_double_tab(p->cmd);
 	exit ((write(2, "Error\n", 6), 1));
 }
-
-void	create_pipe(t_pipex *p, char **argv, char **env, int format)
+void	do_pipe(t_pipex *p, char **argv, char **env)
 {
 	if (pipe(p->fd) == -1)
-		exit ((perror("Error\n"), 1));
-	cmd(p, argv, env, format);
+		exit ((perror("Error"), 1));
+	p->pid = fork();
+	if (p->pid < 0)
+		exit ((perror("Error"), 1));
+	if (p->pid == 0)
+	{
+		close (p->fd[0]);
+		dup2(p->fd[1], 1);
+		cmd(p, argv, env);
+	}
+	else
+	{
+		close (p->fd[1]);
+		dup2(p->fd[0], 0);
+	}
 }
+
 
 int	main(int argc, char **argv, char **env)
 {
 	t_pipex	p;
 	int		status;
 
-	p.n = 1;
-	fprintf (stderr, "%d", argc);
+	status = 0;
+	p.n = 2;
 	if (argc < 5)
-		exit ((perror("Error\n"), 1));
+		exit ((write(2, "Error\n", 6), 1));
 	open_files(&p, argv, argc);
+	dup2(p.fdin, 0);
 	while (p.n < argc - 2)
 	{
-		p.pid = fork();
-		if (p.pid == 0)
-			create_pipe(&p, argv, env, 0);
-		waitpid(p.pid, &status, 0);
+		do_pipe(&p, argv, env);
 		p.n++;
 	}
-	create_pipe(&p, argv, env, 1);
-	waitpid(p.pid, &status, 0);
+	dup2(p.fdout, 1);
+	cmd(&p, argv, env);
 	close_fd(&p);
-	exit_end(status);
+	exit_end(&p, status);
 }

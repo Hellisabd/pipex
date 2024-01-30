@@ -6,14 +6,14 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:44:48 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/24 18:56:24 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:19:54 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include "stdio.h"
 
-char	**find_path(char **env)
+char	**find_path(char **env, t_pipex *p)
 {
 	char	**tmp;
 	int		i;
@@ -22,12 +22,16 @@ char	**find_path(char **env)
 	while (*env && 0 != ft_strncmp(*env, "PATH=", 5))
 		env++;
 	if (!*env)
-		exit (1);
+		exit ((ft_free_double_tab(p->cmd), perror("Error"), 1));
 	tmp = ft_split(*env + 5, ':');
-	// segfault
+	if (!tmp)
+		exit ((ft_free_double_tab(p->cmd), perror("Error"), 1));
 	while (tmp[++i])
+	{
 		tmp[i] = ft_strjoin(tmp[i], "/");
-		// protection
+		if (!tmp[i])
+			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(tmp), perror("Error"), 1));
+	}
 	return (tmp);
 }
 
@@ -54,8 +58,8 @@ void	exec_cmd(t_pipex *p, char **env, int argc)
 		}
 	}
 	if (!p->path[j])
-	// free les commandes et autres avant d'exit (tous les precedents malloc)
-		exit ((free (p->path), ft_putstr_fd("command not found\n", 2), 1));
+		exit ((free (p->path), ft_free_double_tab(p->cmd),\
+		 ft_putstr_fd("command not found\n", 2), 1));
 }
 
 void	cmd_1(t_pipex *p, char **argv, int argc, char **env)
@@ -73,18 +77,15 @@ void	cmd_1(t_pipex *p, char **argv, int argc, char **env)
 		close(p->fd1);
 		close(p->fd2);
 		p->cmd = ft_split(argv[2], ' ');
-		// protection du split
 		while (p->cmd[i])
 		{
 			p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
-			// verifier le retour du malloc
+			if (!p->cmd[i])
+				exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
 			i++;
 		}
-		p->path = find_path(env);
+		p->path = find_path(env, p);
 		exec_cmd(p, env, argc);
-		// Tu n'arriveras jamais ici
-		ft_free_double_tab(p->cmd);
-		exit ((write(2, "Error\n", 6), 1));
 	}
 }
 
@@ -106,14 +107,16 @@ void	cmd_2(t_pipex *p, char **argv, int argc, char **env)
 		while (p->cmd[i])
 		{
 			p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
+			if (!p->cmd[i])
+			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
 			p->cmd[i] = ft_strtrim(p->cmd[i], " ");
+			if (!p->cmd[i])
+			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
 			i++;
 		}
-		p->path = find_path(env);
+		p->path = find_path(env, p);
 		exec_cmd(p, env, argc);
-		// Tu n;arriveras jamais ici
-		ft_free_double_tab(p->cmd);
-		exit ((perror("Error\n"), 1));
+
 	}
 }
 
@@ -142,12 +145,12 @@ int	main(int argc, char **argv, char **env)
 	// close pipes + fd1 & fd2
 		exit ((perror("Error\n"), 1));
 	cmd_1(&pipex, argv, argc, env);
+	waitpid(pipex.pid1, NULL, 0);
 	pipex.pid2 = fork();
 	if (pipex.pid2 == -1)
 		exit ((perror("Error\n"), 1));
 	cmd_2(&pipex, argv, argc, env);
 	close_fd(&pipex);
-	waitpid(pipex.pid1, NULL, 0);
 	waitpid(pipex.pid2, &status, 0);
-	exit_end(status);
+	exit_end((status));
 }
