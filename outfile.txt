@@ -1,4 +1,2 @@
-Teste file with stuff inside$
-That does nothing$
-And also have some lines$
-And some more information
+16
+16

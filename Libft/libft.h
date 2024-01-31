@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 17:31:02 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/24 17:22:19 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/31 15:39:59 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
-void	ft_free_double_tab(char **tab);
+void	ft_free_tab(char **tab);
 void	ft_lstiter(t_Node *list, void (*f)(int));
 void	ft_lstadd_back(t_Node **lst, t_Node *new);
 void	ft_lstadd_front(t_Node **lst, t_Node *new);

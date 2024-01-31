@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:44:48 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/25 11:19:54 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/31 15:44:16 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ char	**find_path(char **env, t_pipex *p)
 	while (*env && 0 != ft_strncmp(*env, "PATH=", 5))
 		env++;
 	if (!*env)
-		exit ((ft_free_double_tab(p->cmd), perror("Error"), 1));
+		exit ((ft_free_tab(p->cmd), perror("Error"), 1));
 	tmp = ft_split(*env + 5, ':');
 	if (!tmp)
-		exit ((ft_free_double_tab(p->cmd), perror("Error"), 1));
+		exit ((ft_free_tab(p->cmd), perror("Error"), 1));
 	while (tmp[++i])
 	{
 		tmp[i] = ft_strjoin(tmp[i], "/");
 		if (!tmp[i])
-			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(tmp), perror("Error"), 1));
+			exit ((ft_free_tab(p->cmd), ft_free_tab(tmp), perror("Error"), 1));
 	}
 	return (tmp);
 }
@@ -58,7 +58,7 @@ void	exec_cmd(t_pipex *p, char **env, int argc)
 		}
 	}
 	if (!p->path[j])
-		exit ((free (p->path), ft_free_double_tab(p->cmd),\
+		exit ((free (p->path), ft_free_tab(p->cmd),\
 		 ft_putstr_fd("command not found\n", 2), 1));
 }
 
@@ -81,7 +81,7 @@ void	cmd_1(t_pipex *p, char **argv, int argc, char **env)
 		{
 			p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
 			if (!p->cmd[i])
-				exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
+				exit ((ft_free_tab(p->cmd), ft_free_tab(p->path), 1));
 			i++;
 		}
 		p->path = find_path(env, p);
@@ -108,10 +108,10 @@ void	cmd_2(t_pipex *p, char **argv, int argc, char **env)
 		{
 			p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
 			if (!p->cmd[i])
-			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
+			exit ((ft_free_tab(p->cmd), ft_free_tab(p->path), 1));
 			p->cmd[i] = ft_strtrim(p->cmd[i], " ");
 			if (!p->cmd[i])
-			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
+			exit ((ft_free_tab(p->cmd), ft_free_tab(p->path), 1));
 			i++;
 		}
 		p->path = find_path(env, p);
