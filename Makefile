@@ -14,7 +14,7 @@ WHITE = \033[0;97m
 
 SRCS	= utils.c
 
-SRCS_MAIN	= main.c $(SRCS)
+SRCS_MAIN	= pipex.c $(SRCS)
 
 SRCS_BONUS	= utils_bonus.c
 
