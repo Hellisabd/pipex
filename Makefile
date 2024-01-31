@@ -45,17 +45,17 @@ $(NAME_BONUS) : $(OBJS_BONUS)
 	@echo "$(YELLOW)Make Bonus Done$(DEF_COLOR)"
 
 clean : 
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(OBJS_BONUS)
 	@make --no-print-directory -C Libft clean
 	@echo "$(BLUE)OBJS CLEAR MY FRIEND!$(DEF_COLOR)"
 
 fclean : 
-	$(RM) $(NAME) $(OBJS)
+	$(RM) $(NAME) $(OBJS) $(NAME_BONUS) $(OBJS_BONUS)
 	@make --no-print-directory -C Libft fclean
 	@echo "$(MAGENTA)¯|_(ツ)_/¯ I'M SO PROUD OF U!$(DEF_COLOR)"
 
 
-re :	fclean all
+re :	fclean all bonus
 
 ex :	re clean
 	@echo "$(GREEN)(•̀ᴗ•́)و ̑̑ALL FINE!(•̀ᴗ•́)و ̑̑$(DEF_COLOR)"

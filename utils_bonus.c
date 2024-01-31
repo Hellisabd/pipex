@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 10:44:44 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/30 15:50:20 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:35:50 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,22 +72,30 @@ void	here_doc(t_pipex *p, char **argv)
 	}
 }
 
-void	open_files(t_pipex *p, char **argv, int argc)
+void	open_files(t_pipex *p, char **argv, int argc, char **env)
 {
+	if (argc < 5)
+		exit ((write(2, "Error\n", 6), 1));
+	p->path = find_path(env);
+	if (!p->path)
+		exit ((close (p->fdin), close (p->fdout), 1));
 	if (ft_strncmp(argv[1], "here_doc", 8) != 0)
 	{
 		p->fdin = open(argv[1], O_RDONLY, 0777);
 		if (p->fdin == -1)
-			exit ((perror("Error\n"), 1));
+			exit ((ft_free_double_tab(p->path), perror("Error\n"), 1));
 		p->fdout = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (p->fdout == -1)
-			exit ((perror("Error\n"), 1));
+			exit ((ft_free_double_tab(p->path), perror("Error\n"), \
+			close (p->fdin), 1));
+		if (0 > dup2(p->fdin, 0))
+			exit ((ft_free_double_tab(p->path), close_fd(p), 1));
 	}
 	else
 	{
 		p->fdout = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (p->fdout == -1)
-			exit ((perror("Error\n"), 1));
+			exit ((ft_free_double_tab(p->path), perror("Error\n"), 1));
 		p->n = 3;
 		here_doc(p, argv);
 	}

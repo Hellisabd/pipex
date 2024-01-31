@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:44:48 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/30 18:31:15 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:41:09 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ void	exec_cmd(t_pipex *p, char **env)
 		free (tmp);
 		j++;
 	}
-	exit ((free (p->path), ft_free_double_tab(p->cmd), ft_putstr_fd("command not found\n", 2), 1));
+	exit ((free (p->path), ft_free_double_tab(p->cmd), \
+	ft_putstr_fd("command not found\n", 2), close_fd(p), 1));
 }
 
 void	cmd(t_pipex *p, char **argv, char **env)
@@ -63,46 +64,46 @@ void	cmd(t_pipex *p, char **argv, char **env)
 	i = 0;
 	p->cmd = ft_split(argv[p->n], ' ');
 	if (!p->cmd)
-		exit ((ft_free_double_tab(p->path), 1));
+		exit ((ft_free_double_tab(p->path), close_fd(p), 1));
 	while (p->cmd[i])
 	{
 		p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
 		if (!p->cmd[i])
-			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
+			exit ((ft_free_double_tab(p->cmd), close_fd(p), \
+			ft_free_double_tab(p->path), 1));
 		p->cmd[i] = ft_strtrim(p->cmd[i], " ");
 		if (!p->cmd[i])
-			exit ((ft_free_double_tab(p->cmd), ft_free_double_tab(p->path), 1));
+			exit ((ft_free_double_tab(p->cmd), close_fd(p), \
+			ft_free_double_tab(p->path), 1));
 		i++;
 	}
 	exec_cmd(p, env);
-	ft_free_double_tab(p->cmd);
-	exit ((write(2, "Error\n", 6), 1));
 }
+
 void	do_pipe(t_pipex *p, char **argv, char **env)
 {
 	if (pipe(p->fd) == -1)
-		exit ((ft_free_double_tab(p->path), perror("Error"), 1));
+		exit ((ft_free_double_tab(p->path), close_fd(p), perror("Error"), 1));
 	p->pid = fork();
 	if (p->pid < 0)
-		exit ((close(p->fd[0]), close (p->fd[1]), \
-		ft_free_double_tab(p->path), perror("Error"), 1));
+		exit ((close_fd(p), ft_free_double_tab(p->path), perror("Error"), 1));
 	if (p->pid == 0)
 	{
-		close (p->fd[0]);
 		if (dup2(p->fd[1], 1) < 0)
-			exit ((close(p->fd[0]), close (p->fd[1]), \
+			exit ((close_fd(p), \
 			ft_free_double_tab(p->path), perror("Error"), 1));
+		close_fd(p);
 		cmd(p, argv, env);
 	}
 	else
 	{
 		close (p->fd[1]);
 		if (dup2(p->fd[0], 0))
-			exit ((close(p->fd[0]), \
+			exit ((close_fd(p), \
 			ft_free_double_tab(p->path), perror("Error"), 1));
+		close (p->fd[0]);
 	}
 }
-
 
 int	main(int argc, char **argv, char **env)
 {
@@ -111,14 +112,7 @@ int	main(int argc, char **argv, char **env)
 
 	status = 0;
 	p.n = 2;
-	if (argc < 5)
-		exit ((write(2, "Error\n", 6), 1));
-	open_files(&p, argv, argc);
-	if (0 > dup2(p.fdin, 0))
-		exit ((close (p.fdin), close (p.fdout), 1));
-	p.path = find_path(env);
-	if (!p.path)
-		exit ((close (p.fdin), close (p.fdout), 1));
+	open_files(&p, argv, argc, env);
 	while (p.n < argc - 2)
 	{
 		do_pipe(&p, argv, env);
@@ -127,12 +121,15 @@ int	main(int argc, char **argv, char **env)
 	}
 	p.pid = fork();
 	if (p.pid < 0)
-		exit ((close(p.fd[0]),\
-		 ft_free_double_tab(p.path), perror("Error"), 1));
-	if (dup2(p.fdout, 1) < 0)
-		exit ((close(p.fd[0]), \
+		exit ((close_fd(&p), \
 		ft_free_double_tab(p.path), perror("Error"), 1));
-	cmd(&p, argv, env);
-	close_fd(&p);
+	if (p.pid == 0)
+	{
+		if (dup2(p.fdout, 1) < 0)
+			exit ((close_fd(&p), \
+			ft_free_double_tab(p.path), perror("Error"), 1));
+		cmd(&p, argv, env);
+	}
+	close_fd((ft_free_double_tab(p.path), &p));
 	exit_end(&p, status);
 }
