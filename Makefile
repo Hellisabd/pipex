@@ -1,6 +1,6 @@
 NAME	= pipex
 
-NAME_BONUS = pipex_bonus.x
+NAME_BONUS = pipex_bonus_x
 
 DEF_COLOR = \033[0;39m
 GRAY = \033[0;90m
