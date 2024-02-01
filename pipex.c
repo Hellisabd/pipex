@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 17:24:46 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/31 17:28:31 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/02/01 10:45:58 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	cmd(t_pipex *p, char **argv, char **env)
 	int	i;
 
 	i = 0;
-	p->cmd = ft_split(argv[p->n], ' ');
+	parsing_cmd(p, argv);
 	if (!p->cmd)
 		exit ((ft_free_tab(p->path), close_fd(p), 1));
 	while (p->cmd[i])

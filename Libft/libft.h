@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 17:31:02 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/31 15:39:59 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/02/01 11:29:36 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	ft_lstadd_front(t_Node **lst, t_Node *new);
 void	ft_lstdelone(t_Node *lst);
 void	ft_lstclear(t_Node **lst);
 void	*ft_calloc(size_t nmemb, size_t size);
+char	find_first_c(char *str, char c2, char c1);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *line, char *buff);
 char	*ft_strtrim(char *s1, char *set);

@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 10:44:44 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/31 17:03:12 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/02/01 11:53:22 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,35 @@ void	exit_end(t_pipex *p, int status, int boul)
 		exit(WEXITSTATUS(status));
 	else
 		exit (1);
+}
+
+void	parsing_cmd(t_pipex *p, char **argv)
+{
+	char	c;
+	int		i;
+
+	c = ' ';
+	if (1 != count_words(argv[p->n], '"') && 1 != count_words(argv[p->n], '\''))
+		c = find_first_c(argv[p->n], '"', '\'');
+	else if (1 != count_words(argv[p->n], '"'))
+		c = '"';
+	else if (1 != count_words(argv[p->n], '\''))
+		c = '\'';
+	p->cmd = ft_split((i = -1, argv[p->n]), c);
+	if (!p->cmd)
+		exit ((ft_free_tab(p->path), close_fd(p), 1));
+	while (p->cmd[++i])
+	{
+		p->cmd[i] = ft_strtrim(p->cmd[i], " ");
+		if (!p->cmd)
+			exit ((ft_free_tab(p->path), close_fd(p), 1));
+		p->cmd[i] = ft_strtrim(p->cmd[i], "\"");
+		if (!p->cmd)
+			exit ((ft_free_tab(p->path), close_fd(p), 1));
+		p->cmd[i] = ft_strtrim(p->cmd[i], "'");
+		if (!p->cmd)
+			exit ((ft_free_tab(p->path), close_fd(p), 1));
+	}
 }
 
 void	close_fd(t_pipex *p)

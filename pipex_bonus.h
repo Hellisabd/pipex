@@ -6,7 +6,7 @@
 /*   By: bgrosjea <bgrosjea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 13:29:07 by bgrosjea          #+#    #+#             */
-/*   Updated: 2024/01/31 15:14:48 by bgrosjea         ###   ########.fr       */
+/*   Updated: 2024/02/01 10:46:35 by bgrosjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@ void	open_files(t_pipex *p, char **argv, int argc, char **env);
 void	awk_gest(char **argv, t_pipex *p);
 void	close_fd(t_pipex *p);
 char	**find_path(char **env);
+void	parsing_cmd(t_pipex *p, char **argv);
 
 #endif
